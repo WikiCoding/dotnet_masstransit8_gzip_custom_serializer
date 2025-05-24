@@ -21,6 +21,6 @@ public class GzipSerializerFactory : ISerializerFactory
 
     public IMessageSerializer CreateSerializer()
     {
-        return null;
+        return new GzipSerializer(contentType);
     }
 }

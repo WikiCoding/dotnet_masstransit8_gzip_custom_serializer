@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMassTransit(x =>
 {
+    x.SetKebabCaseEndpointNameFormatter();
+
     x.AddConsumer<MsgConsumer>();
 
     x.UsingRabbitMq((context, config) =>
@@ -18,9 +20,12 @@ builder.Services.AddMassTransit(x =>
 
         config.ConfigureEndpoints(context);
 
+        config.AddSerializer(new GzipSerializerFactory(new System.Net.Mime.ContentType("application/vnd.masstransit+json")));
         config.AddDeserializer(new GzipSerializerFactory(new System.Net.Mime.ContentType("application/vnd.masstransit+json")));
     });
 });
+
+builder.Services.AddScoped<MsgProducer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

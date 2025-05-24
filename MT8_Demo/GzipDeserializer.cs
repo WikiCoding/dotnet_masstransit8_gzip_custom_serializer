@@ -35,9 +35,9 @@ public class GzipDeserializer : IMessageDeserializer, IObjectDeserializer
     {
         try
         {
-            var decompressedJson = GzipDecompress(Convert.FromBase64String(Encoding.UTF8.GetString(body.GetBytes())));
-
-            var jsonBody = JsonSerializer.Deserialize<Msg>(decompressedJson, Options);
+            // Wrap the payload with "" if sending directly from the UI
+            var binary = Convert.FromBase64String(Encoding.UTF8.GetString(body.GetBytes()).Replace("\\", "").Replace("\"", ""));
+            var decompressedJson = GzipDecompress(binary);
 
             JsonElement? bodyElement = JsonSerializer.Deserialize<JsonElement>(decompressedJson, Options);
 
